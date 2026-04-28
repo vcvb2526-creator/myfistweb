@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web của tôi</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Danh sách từ Google Sheets</h1>
+    <ul id="content">Đang tải dữ liệu...</ul>
+
+    <script>
+        // Thay ID_CUA_BAN bằng ID bạn copy ở Bước 1
+        const sheetId = '1NU-lRoBV0l_z17zL-z7mz5jrkeRG8PCXlrAD21ORerk';
+        const base = `https://google.com{sheetId}/gviz/tq?tqx=out:json`;
+
+        fetch(base)
+            .then(res => res.text())
+            .then(data => {
+                // Đoạn này để xử lý dữ liệu JSON từ Google trả về
+                const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+                const rows = jsonData.table.rows;
+                let html = '';
+                
+                rows.forEach(row => {
+                    html += `<li>${row.c[0].v} - ${row.c[1].v}</li>`;
+                });
+                document.getElementById('content').innerHTML = html;
+            });
+    </script>
+</body>
+</html>
