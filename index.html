@@ -9,23 +9,36 @@
     <ul id="content">Đang tải dữ liệu...</ul>
 
     <script>
-        // Thay ID_CUA_BAN bằng ID bạn copy ở Bước 1
-        const sheetId = '1NU-lRoBV0l_z17zL-z7mz5jrkeRG8PCXlrAD21ORerk';
-        const base = `https://google.com{sheetId}/gviz/tq?tqx=out:json`;
+    // Thay ID chính xác của bạn vào đây
+    const sheetId = 'ID_CUA_BAN_CỦA_BẠN'; 
+    const base = `https://google.com{sheetId}/gviz/tq?tqx=out:json`;
 
-        fetch(base)
-            .then(res => res.text())
-            .then(data => {
-                // Đoạn này để xử lý dữ liệu JSON từ Google trả về
-                const jsonData = JSON.parse(data.substring(47).slice(0, -2));
-                const rows = jsonData.table.rows;
-                let html = '';
-                
-                rows.forEach(row => {
-                    html += `<li>${row.c[0].v} - ${row.c[1].v}</li>`;
-                });
-                document.getElementById('content').innerHTML = html;
+    fetch(base)
+        .then(res => res.text())
+        .then(data => {
+            // Loại bỏ phần thừa để lấy chuẩn định dạng JSON
+            const temp = data.substring(47).slice(0, -2);
+            const jsonData = JSON.parse(temp);
+            
+            console.log(jsonData); // Xem dữ liệu trong F12 (Console)
+
+            const rows = jsonData.table.rows;
+            let html = '';
+            
+            rows.forEach(row => {
+                // row.c[0].v là cột 1, row.c[1].v là cột 2
+                const congViec = row.c[0] ? row.c[0].v : '';
+                const trangThai = row.c[1] ? row.c[1].v : '';
+                html += `<li><strong>${congViec}</strong>: ${trangThai}</li>`;
             });
-    </script>
+
+            document.getElementById('content').innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('content').innerHTML = "Lỗi tải dữ liệu. Hãy kiểm tra ID Sheet hoặc quyền chia sẻ!";
+        });
+</script>
+
 </body>
 </html>
